@@ -17,6 +17,16 @@ app.get('/init', function(req, res){
 		end_date:	new Date(2013,8,5)
 	});
 	db.event.insert({ 
+		text:"My test event B", 
+		start_date: new Date(2013,8,19),
+		end_date:	new Date(2013,8,24)
+	});
+	db.event.insert({ 
+		text:"Morning event", 
+		start_date: new Date(2013,8,4,4,0),
+		end_date:	new Date(2013,8,4,14,0)
+	});
+	db.event.insert({ 
 		text:"One more test event", 
 		start_date: new Date(2013,8,3),
 		end_date:	new Date(2013,8,8),
@@ -42,7 +52,7 @@ app.get('/data', function(req, res){
 app.post('/data', function(req, res){
 	var data = req.body;
 	var mode = data["!nativeeditor_status"];
-	var sid = data.id || data.gr_id; //for grid
+	var sid = data.id;
 	var tid = sid;
 
 	delete data.id;
