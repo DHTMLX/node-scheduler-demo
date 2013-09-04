@@ -1,0 +1,21 @@
+{
+  "name": "node-scheduler-demo",
+  "version": "0.0.1",
+  "description": "Demo of dhtmlxScheduler with nodeJs backend\r ===================",
+  "main": "app.js",
+  "dependencies": {
+    "express": "~3.3.8",
+    "mongoskin": "~0.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/DHTMLX/node-scheduler-demo.git"
+  },
+  "author": "",
+  "license": "GPL V3",
+  "readmeFilename": "README.md"
+}
