@@ -2,48 +2,124 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Basic initialization</title>
-</head>
+
+	<!-- dhtmlxScheduler files -->
 	<script src="codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<script src="codebase/ext/dhtmlxscheduler_mvc.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" href="codebase/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-	
+	<!-- Backbone files -->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="./backbone/underscore.js"></script>
+	<script type="text/javascript" src="./backbone/backbone.js"></script>
+</head>
+
 <style type="text/css" media="screen">
 	html, body{
 		margin:0px;
 		padding:0px;
 		height:100%;
 		overflow:hidden;
-	}	
+	}
+	.dhx_cal_container a{
+		color:white;
+	}
 </style>
 
 <script type="text/javascript" charset="utf-8">
-	function init() {
-		scheduler.config.xml_date="%Y-%m-%d %H:%i";
-		scheduler.init('scheduler_here',new Date(2013,8,4),"month");
+$(function(){
 
-		scheduler.templates.xml_date = function(value){ return new Date(value); };
-		scheduler.load("/data", "json");	
+	//Router
+ 	var Router = Backbone.Router.extend({
+        routes: {
+            "events/:id": "details",
+            "*actions": "default"
+        },
+    });
+    var app_router = new Router;
+    app_router.on('route:default', function(actions) {
+        this.view = new EventsView({ el : $(".app_container") });
+    });
+    app_router.on('route:details', function(id) {
+        this.view = new DetailsView({ el : $(".app_container") }, id);
+    });
 
-		var dp = new dataProcessor("/data");
-		dp.init(scheduler);
-		dp.setTransactionMode("POST", false);
-	}
+
+
+
+
+
+	//Views
+	DetailsView = Backbone.View.extend({
+		initialize: function(cfg, id){
+			this.model = events.get(id);
+			this.render();
+        },
+		events:{
+		    'click input#save':'saveDetails',
+		    'click input#cancel':'cancelDetails'
+		},
+		saveDetails:function(){
+			this.model.set("text", $("#editor").val() );
+			this.model.save();
+			app_router.navigate("/events", true);
+		},
+		cancelDetails:function(){
+			app_router.navigate("/events", true);
+		},
+        render:function(){
+        	var that = this;
+        	$.get("/templates/details.html", function(template){
+				var html = _.template( template, that.model.toJSON() );
+			    that.$el.html(html);
+			});
+        }
+    });
+    EventsView = Backbone.View.extend({
+        initialize: function(){
+        	scheduler.templates.xml_date = function(value){
+				return new Date(value);
+			};
+			scheduler.templates.event_bar_text = function(s,d,ev){
+				return "<a href='#/events/"+ev.id+"'>"+ev.text+"</ev>";
+			};
+			this.render();
+		},
+		render: function(){
+			this.$el.html('<div class="dhx_cal_container" style="width:100%; height:100%;"><div class="dhx_cal_navline"><div class="dhx_cal_prev_button">&nbsp;</div><div class="dhx_cal_next_button">&nbsp;</div><div class="dhx_cal_today_button"></div><div class="dhx_cal_date"></div><div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div><div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div><div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div></div><div class="dhx_cal_header"></div><div class="dhx_cal_data"></div></div>');
+
+            scheduler.init(this.$el.find(".dhx_cal_container")[0], new Date(), "month");
+            scheduler.backbone(events);
+        }
+    });
+
+
+
+	//Model
+	MyEvent   = Backbone.Model.extend({
+		idAttribute: "_id",
+	});
+	EventList = Backbone.Collection.extend({
+		model:MyEvent,
+		url:"./events"
+	});
+
+	events = new EventList();
+	events.on("scheduler:add scheduler:change", function(model){
+		model.save();
+	});
+	events.on("scheduler:remove", function(model){
+		model.destroy();
+	});
+	events.fetch({
+		success:function(){
+			Backbone.history.start();
+		}
+	});
+
+});
 </script>
 
-<body onload="init();">
-	<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
-		<div class="dhx_cal_navline">
-			<div class="dhx_cal_prev_button">&nbsp;</div>
-			<div class="dhx_cal_next_button">&nbsp;</div>
-			<div class="dhx_cal_today_button"></div>
-			<div class="dhx_cal_date"></div>
-			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
-			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
-			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
-		</div>
-		<div class="dhx_cal_header">
-		</div>
-		<div class="dhx_cal_data">
-		</div>
-	</div>
+<body>
+	<div class="app_container" style='width:800px; height:600px;'></div>
 </body>
