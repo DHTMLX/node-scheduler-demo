@@ -1,11 +1,12 @@
 {
   "name": "node-scheduler-demo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Demo of dhtmlxScheduler with nodeJs backend\r ===================",
   "main": "app.js",
   "dependencies": {
-    "express": "~3.3.8",
-    "mongoskin": "~0.6.0"
+    "express": "^4.16.2",
+    "mongodb": "^2.2.34",
+    "mongoskin": "^2.1.0"
   },
   "devDependencies": {},
   "scripts": {
