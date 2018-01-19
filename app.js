@@ -66,8 +66,8 @@ app.post('/data', function(req, res){
 		else if (mode == "inserted")
 			tid = data._id;
 
-		res.setHeader("Content-Type","text/xml");
-		res.send("<data><action type='"+mode+"' sid='"+sid+"' tid='"+tid+"'/></data>");
+		res.setHeader("Content-Type","application/json");
+		res.send({action: mode, sid: sid, tid: tid});
 	}
 
 	if (mode == "updated")
