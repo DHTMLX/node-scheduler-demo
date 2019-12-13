@@ -101,5 +101,7 @@ async function init(client) {
 };
 
 // Binds listens for connections on the specified host and port. This method is identical to Node’s http.Server.listen().
-app.listen(port);
+app.listen(port, () => {
+	console.log("Server is running on port " + port + "...");
+});
  
