@@ -21,7 +21,7 @@ async function main() {
 		// Connect to the MongoDB cluster
 		await client.connect();
 		// Make the appropriate DB calls
-		await listDatabases(client);
+		await init(client);
 
 	} catch (e) {
 		console.error(e);
@@ -30,7 +30,7 @@ async function main() {
 main().catch(console.err);
 
 
-async function listDatabases(client) {
+async function init(client) {
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true })); //extended:true to encode objects and arrays  https://github.com/expressjs/body-parser#bodyparserurlencodedoptions
@@ -59,7 +59,7 @@ async function listDatabases(client) {
 
 	app.get('/data', function (req, res) {
 		events.find().toArray(function (err, data) {
-			//set the id property for all records the database records, which are handled in ._id field
+			//set the id property for all client records to the database records, which are stored in ._id field
 			for (var i = 0; i < data.length; i++){
 				data[i].id = data[i]._id;
 				delete data[i]["!nativeeditor_status"];
@@ -100,6 +100,6 @@ async function listDatabases(client) {
 	});
 };
 
-//Binds and listens for connections on the specified host and port. This method is identical to Node’s http.Server.listen().
+// Binds listens for connections on the specified host and port. This method is identical to Node’s http.Server.listen().
 app.listen(port);
  
