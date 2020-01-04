@@ -1,31 +1,38 @@
 <!doctype html>
+
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Basic initialization</title>
 	<link rel="stylesheet" href="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.css">
 	<script src="https://cdn.dhtmlx.com/scheduler/edge/dhtmlxscheduler.js"></script>
+
 	<style>
-		html, body{
-			margin:0px;
-			padding:0px;
-			height:100%;
-			overflow:hidden;
+		html,
+		body {
+			margin: 0px;
+			padding: 0px;
+			height: 100%;
+			overflow: hidden;
 		}
 	</style>
 	<script>
 		function init() {
-			scheduler.config.xml_date="%Y-%m-%d %H:%i";
-			scheduler.init('scheduler_here',new Date(2018,8,4),"month");
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+			scheduler.init("scheduler_here", new Date(2018, 8, 20), "month");
+			// enables the dynamic loading
+			scheduler.setLoadMode("day");
 
-			scheduler.templates.xml_date = function(value){ return new Date(value); };
+			// load data from backend
 			scheduler.load("/data", "json");
-
+			// connect backend to scheduler
 			var dp = new dataProcessor("/data");
+			// set data exchange mode
 			dp.init(scheduler);
 			dp.setTransactionMode("POST", false);
 		}
 	</script>
 </head>
+
 <body onload="init();">
 	<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
 		<div class="dhx_cal_navline">
@@ -35,7 +42,7 @@
 			<div class="dhx_cal_date"></div>
 			<div class="dhx_cal_tab" name="day_tab"></div>
 			<div class="dhx_cal_tab" name="week_tab"></div>
-			<div class="dhx_cal_tab" name="month_tab" ></div>
+			<div class="dhx_cal_tab" name="month_tab"></div>
 		</div>
 		<div class="dhx_cal_header">
 		</div>
