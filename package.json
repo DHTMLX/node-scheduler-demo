@@ -6,7 +6,7 @@
   "dependencies": {
     "express": "^4.22.0",
     "mongodb": "^3.3.5",
-    "requirejs": "^2.3.6"
+    "requirejs": "^2.3.7"
   },
   "devDependencies": {},
   "scripts": {
